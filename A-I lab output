@@ -140,3 +140,16 @@ mysql> select * from Employee;
 |    205 | David       | 50000.00 |
 +--------+-------------+----------+
 5 rows in set (0.00 sec)
+
+                                                    DCL
+
+1. create user 'username'@'localhost' identified by 'password';
+Query OK, 0 rows affected (0.22 sec)
+
+2.grant all privileges on database_name.departments to 'username'@'localhost';
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> revoke all privileges on database_name.departments from 'username'@'localhost';
+Query OK, 0 rows affected (0.02 sec)
+
+3.
