@@ -590,6 +590,7 @@ SQL> DECLARE
  14    CLOSE c_customers;
  15    END;
  16    /
+
 1 sam 7000
 2 tam 8000
 3 ram 7500
@@ -599,6 +600,167 @@ PL/SQL procedure successfully completed.
 
 SQL
 ----------------------------------------------------------------------------------
+
+
+                                       TRIGGER
+                                  ==================
+
+SQL> set serveroutput on
+SQL> CREATE OR REPLACE TRIGGER salaryupdate
+  2    BEFORE DELETE OR INSERT OR UPDATE ON customers
+  3    FOR EACH ROW
+  4    WHEN (NEW.ID > 0)
+  5    DECLARE
+  6       sal_diff number;
+  7   BEGIN
+  8       sal_diff := :NEW.salary  - :OLD.salary;
+  9       dbms_output.put_line('Old salary: ' || :OLD.salary);
+ 10       dbms_output.put_line('New salary: ' || :NEW.salary);
+ 11       dbms_output.put_line('Salary difference: ' || sal_diff);
+ 12   END;
+ 13     /
+
+Trigger created.
+
+SQL> DECLARE
+  2       total_rows number(2);
+  3    BEGIN
+  4         UPDATE  customers
+  5         SET salary = salary + 5000;
+  6         IF sql%notfound THEN
+  7            dbms_output.put_line('no customers updated');
+  8         ELSIF sql%found THEN
+  9            total_rows := sql%rowcount;
+ 10           dbms_output.put_line( total_rows || ' customers updated ');
+ 11        END IF;
+ 12     END;
+ 13     /
+
+
+Old salary: 2000
+New salary: 7000
+Salary difference: 5000
+Old salary: 3000
+New salary: 8000
+Salary difference: 5000
+Old salary: 2500
+New salary: 7500
+Salary difference: 5000
+Old salary: 5000
+New salary: 10000
+Salary difference: 5000
+4 customers updated
+
+PL/SQL procedure successfully completed.
+
+SQL>
+-----------------------------------------------------------------------------------------
+
+
+SQL> create table employee(employee_no int primary key,name varchar(10),salary int);
+
+Table created.
+
+SQL> insert into employee values(1,'Amal',40000);
+
+1 row created.
+
+SQL> insert into employee values(2,'Athullaya',50000);
+
+1 row created.
+
+SQL> insert into employee values(3,'Nandhu',60000);
+
+1 row created.
+
+SQL> insert into employee values(4,'ponnan',70000);
+
+1 row created.
+
+SQL> set serveroutput on
+SQL> CREATE OR REPLACE TRIGGER Checksalary
+  2     BEFORE
+  3     INSERT OR UPDATE ON employee
+  4    FOR EACH ROW
+  5     BEGIN
+  6     IF :new.salary>3000 THEN
+  7     raise_application_error(-20001, 'salary should not be greater than 2000');
+  8     END IF;
+  9     END;
+ 10      /
+
+Trigger created.
+
+SQL> update employee set salary=4000 where employee_no=2;
+update employee set salary=4000 where employee_no=2
+       *
+ERROR at line 1:
+ORA-20001: salary should not be greater than 2000
+ORA-06512: at "SYSTEM.CHECKSALARY", line 3
+ORA-04088: error during execution of trigger 'SYSTEM.CHECKSALARY'
+
+
+SQL> update employee set salary=4000 where employee_no=2
+  2
+SQL> update employee set salary=2600 where employee_no=2;
+
+1 row updated.
+
+SQL> select * from employee;
+
+EMPLOYEE_NO NAME           SALARY
+----------- ---------- ----------
+          1 Amal            40000
+          2 Athullaya        2600
+          3 Nandhu          60000
+          4 ponnan          70000
+
+SQL>
+----------------------------------------------------------=============================-----------------------===========
+SQL>  create table stud(sid int,sname varchar(20),sdpmt varchar(20),marks int);
+
+Table created.
+
+SQL>   insert into stud values(1,'sam','cse',20);
+
+1 row created.
+
+SQL>  insert into stud values(2,'tam','it',30);
+
+1 row created.
+
+SQL> select * from stud;
+
+       SID SNAME                SDPMT                     MARKS
+---------- -------------------- -------------------- ----------
+         1 sam                  cse                          20
+         2 tam                  it                           30
+
+SQL> create or replace trigger studtrig after insert on stud
+  2      begin
+  3      dbms_output.put_line('inserted');
+  4      end;
+  5      /
+
+Trigger created.
+
+SQL> set serveroutput on
+SQL> insert into stud values(3,'wam','ec',39);
+inserted
+
+1 row created.
+
+SQL> select * from stud;
+
+       SID SNAME                SDPMT                     MARKS
+---------- -------------------- -------------------- ----------
+         1 sam                  cse                          20
+         2 tam                  it                           30
+         3 wam                  ec                           39
+
+SQL>
+
+---------------------------------------------------------------------------------------------
 
 
 
