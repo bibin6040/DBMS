@@ -239,3 +239,29 @@ college> db.s2mca.find({sub:/che/});
     credit: 5
   }
 ]
+
+college> db.s2mca.find({ sub: /Eng/ });
+[
+  {
+    _id: ObjectId('661398847fb445125b8bf204'),
+    roll: 3,
+    name: 'tam',
+    age: 20,
+    div: 'C',
+    sub: [ 'phy', 'Eng' ],
+    credit: 3
+  }
+]
+college>
+college> db.s2mca.find({name:/sam/i});
+[
+  {
+    _id: ObjectId('6613984e7fb445125b8bf203'),
+    roll: 2,
+    name: 'sam',
+    age: 21,
+    div: 'B',
+    sub: [ 'phy', 'Mat' ],
+    credit: 4
+  }
+]
