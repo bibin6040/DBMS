@@ -1,0 +1,156 @@
+     TODO LIST  APPLICATION
+==================================
+step 1
+-----------
+take the cmd for do the command
+  C:\Users\mlm\Desktop\python>py -V
+Python 3.12.0
+
+step 2
+----------
+install the pymongo module
+
+pip install pymongo
+
+step3
+-------------
+create a python file with any name 
+
+eg:pyApp
+
+step-4
+-------------
+enter the code and save it in the file with .py
+
+code
+--------
+from pymongo import MongoClient
+from datetime import datetime
+from bson.objectid import ObjectId
+
+# Connect to MongoDB
+client = MongoClient('mongodb://localhost:27017/')
+db = client['todolist']
+collection = db['tasks']
+
+def add_task(task):
+    """Add a new task to the database."""
+    task['created_at'] = datetime.now()
+    result = collection.insert_one(task)
+    print("Task added with ID:", result.inserted_id)
+
+def view_tasks():
+    """View all tasks in the database."""
+    tasks = collection.find()
+    print("Tasks:")
+    for task in tasks:
+        print(task)
+
+def update_task(task_id, new_task):
+    """Update an existing task."""
+    result = collection.update_one({'_id': ObjectId(task_id)}, {'$set': new_task})
+    if result.modified_count == 1:
+        print("Task updated successfully.")
+    else:
+        print("No task found with the given ID.")
+
+def delete_task(task_id):
+    """Delete an existing task."""
+    result = collection.delete_one({'_id': ObjectId(task_id)})
+    if result.deleted_count == 1:
+        print("Task deleted successfully.")
+    else:
+        print("No task found with the given ID.")
+
+def main():
+    while True:
+        print("\n1. Add Task")
+        print("2. View Tasks")
+        print("3. Update Task")
+        print("4. Delete Task")
+        print("5. Exit")
+        choice = input("Enter your choice: ")
+
+        if choice == '1':
+            task_name = input("Enter task name: ")
+            add_task({'name': task_name})
+        elif choice == '2':
+            view_tasks()
+        elif choice == '3':
+            task_id = input("Enter task ID to update: ")
+            new_task_name = input("Enter new task name: ")
+            update_task(task_id, {'name': new_task_name})
+        elif choice == '4':
+            task_id = input("Enter task ID to delete: ")
+            delete_task(task_id)
+        elif choice == '5':
+            break
+        else:
+            print("Invalid choice. Please try again.")
+
+if __name__ == "__main__":
+    main()
+
+
+step -5
+--------
+run the file in cmd using 
+
+"python pyApp.py"
+
+
+step-6
+-------
+result
+--------
+
+output
+----------
+C:\Users\mlm\Desktop\python>py Pyapp.py
+
+1. Add Task
+2. View Tasks
+3. Update Task
+4. Delete Task
+5. Exit
+Enter your choice: 1
+Enter task name: paniyedukkada
+Task added with ID: 66277fbf5aa53901775f04f4
+
+1. Add Task
+2. View Tasks
+3. Update Task
+4. Delete Task
+5. Exit
+Enter your choice: 2
+Tasks:
+{'_id': ObjectId('66277fbf5aa53901775f04f4'), 'name': 'paniyedukkada', 'created_at': datetime.datetime(2024, 4, 23, 15, 0, 39, 972000)}
+
+1. Add Task
+2. View Tasks
+3. Update Task
+4. Delete Task
+5. Exit
+Enter your choice: 3
+Enter task ID to update: 66277fbf5aa53901775f04f4
+Enter new task name: Do the program
+Task updated successfully.
+
+1. Add Task
+2. View Tasks
+3. Update Task
+4. Delete Task
+5. Exit
+Enter your choice: 4
+Enter task ID to delete: 66277fbf5aa53901775f04f4
+Task deleted successfully.
+
+1. Add Task
+2. View Tasks
+3. Update Task
+4. Delete Task
+5. Exit
+Enter your choice: 5
+
+C:\Users\mlm\Desktop\python>
+
